@@ -50,6 +50,15 @@ void fps_draw(void)
 	stringRGBA(screen, 0, 0, string, 255, 255, 255, 255);
 }
 
+#ifdef MIYOO
+double convert(double v)
+{
+	const double pi2 = 2 * M_PI;
+	int r = v / pi2;
+	return v - r * pi2;
+}
+#endif
+
 int main(int argc, char *argv[])
 {
 	srand(time(NULL));
@@ -82,12 +91,26 @@ int main(int argc, char *argv[])
             double ny = y + nv / rc2;
             int xx = nx - SCREEN_WIDTH / 2;
             int yy = ny - SCREEN_HEIGHT / 2;
+#ifdef MIYOO
+			double arg1 = convert(nx / rc3);
+			double arg2 = convert(ny / rc4);
+			double arg3 = convert((nx + ny) / rc5);
+			double arg4 = convert(sqrt(nx * nx + ny * ny) / rc6);
+			double arg5 = convert(sqrt(xx * xx + yy * yy) / rc7);
+            Uint8 v = (128.0 + 128.0 * sin(arg1) +
+                    128.0 + 128.0 * sin(arg2) +
+                    128.0 + 128.0 * sin(arg3) +
+                    128.0 + 128.0 * sin(arg4) +
+                    128.0 + 128.0 * sin(arg5)
+                    ) / 5;
+#else
             Uint8 v = (128.0 + 128.0 * sin(nx / rc3) +
                     128.0 + 128.0 * sin(ny / rc4) +
                     128.0 + 128.0 * sin((nx + ny) / rc5) +
                     128.0 + 128.0 * sin(sqrt(nx * nx + ny * ny) / rc6) +
                     128.0 + 128.0 * sin(sqrt(xx * xx + yy * yy) / rc7)
                     ) / 5;
+#endif
             map[y][x] = v;
         }
 
